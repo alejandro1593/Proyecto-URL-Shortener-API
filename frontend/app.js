@@ -111,6 +111,13 @@ function setAuthMode(mode) {
 async function handleAuth(e) {
   e.preventDefault(); // evita que el formulario recargue la página
 
+  // En modo registro el nombre es obligatorio (no usamos required en HTML
+  // porque si no, Chrome bloquea el login: el campo queda oculto y vacío)
+  if (authMode === 'register' && !fullName.value.trim()) {
+    toast('Escribe tu nombre', 'error');
+    return;
+  }
+
   const body = { email: email.value.trim(), password: password.value };
   if (authMode === 'register') body.fullName = fullName.value.trim();
 
