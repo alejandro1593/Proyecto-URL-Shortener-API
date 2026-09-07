@@ -1,0 +1,330 @@
+/* ===== Variables de diseño: colores, sombras, radios ===== */
+:root {
+  --bg: #f6f7fb;            /* fondo general muy claro */
+  --card: #ffffff;          /* fondo de tarjetas */
+  --text: #1f2430;          /* texto principal */
+  --muted: #6b7280;         /* texto secundario */
+  --border: #e5e7eb;        /* bordes sutiles */
+  --accent: #6366f1;        /* color de acento (índigo) */
+  --accent-dark: #4f46e5;   /* acento al pasar el mouse */
+  --danger: #dc2626;        /* rojo para errores/borrar */
+  --success: #16a34a;       /* verde para éxitos */
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.05);
+  --radius: 14px;
+}
+
+/* ===== Reset básico ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Contenedor central: ancho máximo y centrado */
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ===== Cabecera ===== */
+.header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+/* Logo con acento de color en la segunda parte */
+.logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.logo span {
+  color: var(--accent);
+}
+
+main {
+  padding-top: 32px;
+  padding-bottom: 48px;
+}
+
+/* ===== Tarjetas ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  margin-bottom: 16px;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Tarjeta de login centrada verticalmente */
+.auth-card {
+  margin-top: 8vh;
+}
+
+/* ===== Formularios ===== */
+form > div {
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fafbfc;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+/* Resaltado del input enfocado */
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  background: #fff;
+}
+
+/* Fila del formulario de acortar: URL + código + botón */
+.form-row {
+  display: flex;
+  gap: 10px;
+}
+
+.form-row input:first-child {
+  flex: 1;
+}
+
+/* El código opcional más angosto */
+.code-input {
+  max-width: 150px;
+}
+
+/* ===== Botones ===== */
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Botón principal (relleno de color) */
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-dark);
+}
+
+/* Botón fantasma (sólo borde) */
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Botón tipo enlace (login/registro) */
+.link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.toggle {
+  margin-top: 18px;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 6px;
+}
+
+/* ===== Lista de URLs ===== */
+.urls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.url-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+/* Bloque con el short URL y el original */
+.url-info {
+  min-width: 0;
+  flex: 1;
+}
+
+/* El short URL en color acento */
+.url-short {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.95rem;
+  word-break: break-all;
+}
+
+.url-short:hover {
+  text-decoration: underline;
+}
+
+/* El URL original truncado con puntos suspensivos */
+.url-original {
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+/* Contador de clicks con estilo de etiqueta */
+.url-stats {
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+/* Acciones del ítem: copiar y borrar */
+.url-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Botones pequeños dentro de la lista */
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
+
+/* Botón de borrar en rojo suave */
+.btn-danger {
+  color: var(--danger);
+  border: 1px solid #fecaca;
+  background: #fff;
+}
+
+.btn-danger:hover {
+  background: #fef2f2;
+}
+
+/* Texto cuando no hay URLs */
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 0;
+}
+
+/* ===== Mensaje flotante (toast) ===== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: var(--shadow);
+  z-index: 100;
+  animation: fade-in 0.2s ease;
+}
+
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+
+/* Animación de entrada del toast */
+@keyframes fade-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ===== Utilidades ===== */
+.hidden {
+  display: none !important;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ===== Responsive para móvil ===== */
+@media (max-width: 520px) {
+  .form-row {
+    flex-direction: column;
+  }
+  .code-input {
+    max-width: none;
+  }
+}

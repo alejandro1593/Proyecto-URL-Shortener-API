@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Viewport para que se vea bien en móvil -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Shortener</title>
+  <!-- Hoja de estilos principal -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===== Cabecera ===== -->
+  <header class="header">
+    <div class="container header-inner">
+      <!-- Logo del sitio -->
+      <h1 class="logo">Link<span>ly</span></h1>
+      <!-- Botón de sesión: se muestra sólo cuando hay token -->
+      <button id="btn-logout" class="btn btn-ghost hidden">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ===== Vista de autenticación (sin token) ===== -->
+    <section id="view-auth" class="card auth-card">
+      <h2 id="auth-title">Iniciar sesión</h2>
+      <p class="muted" id="auth-subtitle">Bienvenido de nuevo</p>
+
+      <!-- Formulario de login/registro -->
+      <form id="auth-form" autocomplete="on">
+        <!-- Campo de nombre: sólo visible en modo registro -->
+        <div id="field-fullName" class="hidden">
+          <label for="fullName">Nombre</label>
+          <input type="text" id="fullName" placeholder="Tu nombre" required />
+        </div>
+
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="tu@email.com" required />
+        </div>
+
+        <div>
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" placeholder="••••••••" minlength="6" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-auth">Iniciar sesión</button>
+      </form>
+
+      <!-- Interruptor login/registro -->
+      <p class="muted toggle">
+        <span id="toggle-text">¿No tienes cuenta?</span>
+        <button type="button" class="link" id="btn-toggle">Regístrate</button>
+      </p>
+    </section>
+
+    <!-- ===== Vista principal (con token): acortador + lista ===== -->
+    <section id="view-dashboard" class="hidden">
+
+      <!-- Tarjeta para acortar una URL -->
+      <div class="card">
+        <h2>Acortar URL</h2>
+        <form id="create-form" class="form-row">
+          <input type="url" id="long-url" placeholder="https://ejemplo.com/ruta/muy/larga" required />
+          <!-- Código personalizado opcional -->
+          <input type="text" id="custom-code" class="code-input" placeholder="código opcional" maxlength="10" />
+          <button type="submit" class="btn btn-primary">Acortar</button>
+        </form>
+      </div>
+
+      <!-- Tarjeta con la lista de URLs del usuario -->
+      <div class="card">
+        <div class="card-head">
+          <h2>Mis URLs</h2>
+          <button type="button" class="btn btn-ghost" id="btn-refresh">Actualizar</button>
+        </div>
+        <div id="urls-list" class="urls-list"><!-- la lista se genera con JS --></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mensaje de estado (éxito/error) flotante -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Lógica de la aplicación -->
+  <script src="app.js"></script>
+</body>
+</html>
