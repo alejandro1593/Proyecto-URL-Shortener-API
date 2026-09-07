@@ -1,0 +1,182 @@
+====================================================================
+ PROYECTO: URL SHORTENER API  (+ Frontend)
+====================================================================
+
+QUÉ HACE EL PROYECTO
+--------------------------------------------------------------------
+Es un acortador de URLs completo: el usuario registra su cuenta, inicia
+sesión y convierte cualquier enlace largo en uno corto y compartible
+(ej. https://bit.ly/xyz). Cada URL corta es unica y puede tener:
+
+  - Un código personalizado (ej. /mi-codigo)
+  - Fecha de expiración opcional
+  - Estadísticas de descargas (total de clicks)
+
+Al abrir una URL corta, el servidor redirige al enlace original (HTTP 302)
+y registra el click para las estadísticas. Incluye:
+
+  - Autenticación con JWT (registro, login, logout, refresh token)
+  - CRUD de URLs (crear, listar, ver detalle, actualizar, eliminar)
+  - Analytics: clicks por día, dispositivo y navegador, top URLs
+  - Rate limiting para evitar abusos y fuerza bruta
+  - Frontend minimalista que consume todo lo anterior
+
+ESTRUCTURA DEL REPOSITORIO
+--------------------------------------------------------------------
+  backend/   => API REST completa (servidor + base de datos + tests + CI)
+  frontend/  => Interfaz de usuario (HTML, CSS y JavaScript plano)
+  .github/   => Pipeline de CI/CD (GitHub Actions)
+
+====================================================================
+ BACKEND - TECNOLOGÍAS Y POR QUÉ
+====================================================================
+
+  Node.js + Express 4
+  -------------------
+  Express es el framework HTTP más usado y conocido del ecosistema
+  Node.js. Se eligió porque es mínimo, rápido de aprender y con una
+  inmensidad de documentación y middleware. Suficiente peso para una
+  API REST sin el overhead de frameworks más grandes.
+
+  TypeScript
+  ----------
+  Añade tipos a JavaScript, lo que permite detectar errores en tiempo
+  de compilación (antes de ejecutar). En un proyecto de crecimiento
+  como este evita bugs tontos, da autocompletado en el editor y deja
+  claro qué espera cada función.
+
+  PostgreSQL 16
+  -------------
+  Base de datos relacional. Se usó porque los datos del proyecto son
+  relacionales por naturaleza (usuarios -> urls -> clicks). Ofrece
+  consultas SQL potentes para las estadísticas (agrupar clicks por día,
+  contar por dispositivo) y transacciones seguras para mantener la
+  integridad de los datos.
+
+  Redis 7
+  --------
+  Base de datos en memoria. Se usa como CACHE: las URLs populares se
+  guardan temporalmente para responder la redirección sin pegarle a
+  PostgreSQL cada vez. Al ser en memoria es más rápido que leer de
+  disco. Confirmado el motivo exacto: velocidad en las lecturas.
+
+  JWT (jsonwebtoken) + bcrypt
+  ---------------------------
+  JWT (JSON Web Token) es la autenticación sin estado: el servidor
+  firma un token con el ID del usuario y el cliente lo envía en cada
+  petición. No se guarda sesión en el servidor, lo que escala fácil.
+  Las contraseñas se guardan SIEMPRE con hash bcrypt (función de un
+  solo sentido con sal), nunca en texto plano, para proteger al
+  usuario si la base se filtra.
+
+  Zod
+  ---
+  Librería de validación de esquemas. Valida los datos que llegan por
+  HTTP (email, URLs, códigos) ANTES de tocar la base de datos. Fue una
+  decisión de seguridad y robustez: devuelve errores claros y evita
+  datos corruptos.
+
+  nanoid
+  ------
+  Genera los códigos cortos aleatorios (ej. "kL7xQpZ"). Es una
+  utilidad mínima, rápida y genera IDs únicos sin necesidad de un
+  servidor central. Se prefirió sobre UUID para los códigos porque
+  genera cadenas más cortas (7 caracteres).
+
+  Swagger / OpenAPI
+  -----------------
+  Documentación de la API generada automáticamente desde el código.
+  Sirve una interfaz interactiva (http://localhost:3000/api-docs)
+  donde se prueba cada endpoint sin herramientas externas.
+
+  Jest + Supertest
+  ----------------
+  Framework de testing elegido por su popularidad y facilidad.
+  Supertest permite probar la API real haciendo peticiones HTTP al
+  servidor en los tests de integración. Garantiza que los cambios
+  no rompan lo que ya funcionaba.
+
+  Docker + Docker Compose
+  -----------------------
+  Empaqueta app, PostgreSQL y Redis en contenedores. Compose define
+  toda la infraestructura con un solo comando (docker compose up).
+  Garantiza que se ejecute igual en cualquier máquina (portabilidad)
+  sin instalar nada manualmente.
+
+  GitHub Actions (CI/CD)
+  ----------------------
+  En cada push a "main" ejecuta automáticamente: lint, typecheck,
+  tests unitarios, tests de integración (con Postgres/Redis reales)
+  y el build de la imagen Docker. Detecta errores antes de que
+  lleguen a producción.
+
+  Dependencias mínimas (compression, helmet, cors, express-rate-limit)
+  --------------------------------------------------------------------
+  • compression: comprime las respuestas HTTP (menos uso de red)
+  • helmet: añade cabeceras de seguridad HTTP por defecto
+  • cors: permite que el frontend (puerto 3001) consuma la API (3000)
+  • express-rate-limit: limita peticiones por IP para frenar abusos
+
+====================================================================
+ FRONTEND - TECNOLOGÍAS Y POR QUÉ
+====================================================================
+
+  HTML + CSS + JavaScript puro (sin frameworks)
+  ---------------------------------------------
+  Se eligió deliberadamente JavaScript plano SIN React/Vue/Angular.
+  Motivo: el frontend es una sola página, no requiere estado complejo
+  ni librerías externas. Con cero dependencias el proyecto:
+
+    - Es más fácil de leer y mantener (menos conceptos)
+    - Se ejecuta sin instalar nada: solo "node server.js"
+    - Tiene todo el código comentado para entenderlo línea a línea
+
+  Node.js (servidor estático mínimo)
+  ----------------------------------
+  Un pequeño servidor con el módulo "http" nativo de Node que sirve
+  los archivos estáticos (HTML, CSS, JS) en el puerto 3001. No usa
+  ninguna dependencia externa: solo el módulo con el que se arranca.
+
+  fetch (API nativa del navegador)
+  --------------------------------
+  Se usa para las peticiones a la API del backend. No hace falta
+  axios: con "fetch" más unos headers (Content-Type y Authorization
+  Bearer) basta para todo el CRUD.
+
+  localStorage
+  ------------
+  El token JWT se guarda en localStorage del navegador para que la
+  sesión sobreviva al recargar la página. Se eligió sobre un estado
+  en memoria por simpleza: el frontend no necesita más.
+
+  Diseño mínimo y moderno
+  -----------------------
+  CSS por archivo propio (sin frameworks de estilos). Variables CSS,
+  tarjetas con bordes redondeados y sombras suaves, paleta de color
+  índice. Mínimo de reglas, animaciones solo donde aportan (toast).
+
+====================================================================
+ CÓMO LEVANTAR EL PROYECTO
+====================================================================
+
+  1) Backend (requiere Docker):
+       cd backend
+       docker compose up -d
+     API:  http://localhost:3000
+     Docs: http://localhost:3000/api-docs
+
+  2) Frontend:
+       cd frontend
+       npm start
+     Web:  http://localhost:3001
+
+====================================================================
+ DATOS TÉCNICOS RÁPIDOS
+====================================================================
+  • Backend en TypeScript, compilado con tsc a la carpeta dist/
+  • Base de datos: 4 tablas (users, urls, clicks, refresh_tokens)
+  • Redirección: HTTP 302 al enlace original
+  • Tests: 33 pruebas (unitarias + integración)
+  • CI/CD: lint, typecheck, tests y build en cada push a main
+  • Autor: Eduard Alejandro Vega Diaz
+====================================================================
