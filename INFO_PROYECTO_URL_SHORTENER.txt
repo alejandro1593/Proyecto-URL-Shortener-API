@@ -1,0 +1,208 @@
+=============================================================================
+                    URL SHORTENER API - ANALYTICS PLATFORM
+                      Proyecto para Portafolio Backend
+=============================================================================
+
+ ¿QUÉ ES ESTE PROYECTO?
+=============================================================================
+
+Es una API REST (backend) que permite:
+
+1. ACORTAR URLs largas
+   - Transformas un link largo como:
+     https://www.ejemplo.com/productos/categoria/tecnologia/laptops/gaming?color=rojo&precio=500-1000&orden=precio
+   - En uno corto como:
+     https://tudominio.com/abc123
+
+2. REDIGIRIGIR automáticamente
+   - Cuando alguien visita tudominio.com/abc123
+   - El sistema lo redirige al link original
+   - Esto ocurre en menos de 100ms
+
+3. TRACKEAR analytics (estadísticas)
+   - Cuántas veces se hizo clic en cada URL
+   - Desde qué países/países
+   - Qué dispositivos usaron (móvil, PC, tablet)
+   - Cuándo se visitaron (por día, semana, mes)
+
+
+ ¿PARA QUÉ SIRVE?
+=============================================================================
+
+CASOS DE USO REALES:
+
+1. MARKETING Y REDES SOCIALES
+   - Las URLs largas se ven feas en Twitter/Instagram
+   - Con URL corta, el contenido es más limpio
+   - Ejemplo: https://tudominio.com/promo2024 → Página de oferta
+
+2. EMAIL MARKETING
+   - En emails, las URLs cortas generan más clics
+   - Puedes trackear cuántos abrieron tu email
+
+3. ANÁLISIS DE DATOS
+   - Saber qué contenido es más popular
+   - Medir el rendimiento de campañas publicitarias
+   - Tomar decisiones basadas en datos reales
+
+4. APIs PÚBLICAS
+   - Otras empresas pueden integrar tu servicio
+   - Ejemplo: una app móvil que acorta URLs automáticamente
+
+5. GESTIÓN DE ENLACES
+   - Organizar cientos de URLs por categorías
+   - Eliminar links rotos fácilmente
+   - Crear URLs con expiración (por ejemplo: links de descarga temporales)
+
+
+ ¿POR QUÉ ES ÚTIL PARA TU PORTAFOLIO?
+=============================================================================
+
+1. DEMUESTRA CONOCIMIENTOS BACKEND SÓLIDOS
+   - APIs REST bien diseñadas
+   - Autenticación y autorización
+   - Base de datos relacional/nosql
+   - Caching con Redis
+   - Testing automatizado
+
+2. ES UN PROYECTO RECONOCIBLE
+   - TinyURL, Bitly, URL SHORT son empresas exitosas
+   - Los reclutadores saben inmediatamente qué hace
+   - Fácil de explicar en 30 segundos
+
+3. INCLUYE TECNOLOGÍAS QUE LAS EMPRESAS PIDEN
+   - TypeScript (estándar en backend profesional)
+   - Redis (caching - concepto clave)
+   - Docker (containerización)
+   - JWT/OAuth2 (autenticación moderna)
+   - Jest (testing)
+   - OpenAPI (documentación de APIs)
+
+4. PUEDE ESCALAR Y AGREGAR FEATURES
+   - Empieza simple (MVP)
+   - Le vas agregando complejidad
+   - Muestra que sabes iterar y mejorar
+
+
+ FLUJO BÁSICO DEL SISTEMA
+=============================================================================
+
+USUARIO CREA UNA CUENTA
+          ↓
+USUARIO PEGA UNA URL LARGA
+          ↓
+SISTEMA GENERA CÓDIGO CORTO (ej: abc123)
+          ↓
+SE GUARDA EN BASE DE DATOS:
+   - Código corto: abc123
+   - URL original: https://url-muy-larga...
+   - ID del usuario: 123
+   - Fecha: 2024-01-15
+          ↓
+USUARIO COMPARTE EL LINK CORTO
+          ↓
+CUANDO ALGUIEN VISITA EL LINK:
+   - Se busca en la base de datos
+   - Se registra el clic (analytics)
+   - Se redirige a la URL original
+
+
+ TECH STACK (TECNOLOGÍAS A USAR)
+=============================================================================
+
+BACKEND:
+   - TypeScript     → JavaScript con tipos (reduce bugs)
+   - Express.js     → Framework web para Node.js
+   - PostgreSQL     → Base de datos relacional
+   - Redis          → Caching en memoria (velocidad)
+   - JWT            → Tokens de autenticación
+   - bcrypt         → Hasheo de contraseñas
+   - nanoid         → Generador de códigos cortos únicos
+
+TESTING:
+   - Jest           → Framework de testing
+   - Supertest      → Testing de APIs HTTP
+
+DEVOPS:
+   - Docker         → Containerización
+   - GitHub Actions → CI/CD (tests automáticos)
+
+DOCUMENACIÓN:
+   - OpenAPI/Swagger → Documentación de la API
+
+
+ ESTRUCTURA DEL PROYECTO
+=============================================================================
+
+url-shortener/
+├── src/
+│   ├── config/          → Configuración (variables de entorno)
+│   ├── controllers/     → Lógica de negocio
+│   ├── middleware/       → Auth, rate limiting, validación
+│   ├── models/          → Schemas de base de datos
+│   ├── routes/          → Endpoints de la API
+│   ├── services/        → Lógica externa (Redis, email)
+│   ├── utils/           → Funciones auxiliares
+│   └── app.ts           → Entry point del servidor
+├── tests/
+│   ├── unit/            → Tests aislados
+│   └── integration/     → Tests completos de API
+├── docker-compose.yml
+├── Dockerfile
+├── .github/workflows/   → CI/CD
+├── swagger.yaml         → Documentación
+└── README.md
+
+
+ APRENDIZAJES CLAVE
+=============================================================================
+
+Al completar este proyecto aprenderás:
+
+1. DISEÑO DE APIs REST
+   - Endpoints bien organizados
+   - Métodos HTTP correctos (GET, POST, DELETE)
+   - Códigos de estado (200, 201, 400, 401, 404, 500)
+   - Paginación y filtrado
+
+2. AUTENTICACIÓN MODERNA
+   - JWT (JSON Web Tokens)
+   - OAuth2 (login con Google/GitHub)
+   - Bcrypt para contraseñas
+   - Roles de usuario
+
+3. BASE DE DATOS
+   - Modelado de esquemas
+   - Queries optimizadas
+   - Índices para performance
+   - Migraciones
+
+4. CACHING CON REDIS
+   - Qué es y por qué es rápido
+   - Cuándo cachear vs consultar BD
+   - Estrategias de invalidación
+
+5. TESTING
+   - Tests unitarios (funciones aisladas)
+   - Tests de integración (API completa)
+   - Cobertura de código
+   - Mocking
+
+6. DEVOPS BÁSICO
+   - Docker (containers)
+   - CI/CD (deploy automático)
+   - Variables de entorno
+   - Deploy en la nube (Railway/Render)
+
+
+ DURACIÓN ESTIMADA: 4 SEMANAS
+=============================================================================
+
+Semana 1: Setup + Auth + Schema de BD
+Semana 2: CRUD URLs + Redis + Rate Limiting
+Semana 3: Analytics + Dashboard básico
+Semana 4: Testing + Docker + Deploy + Docs
+
+=============================================================================
+        Fin del documento - Proyecto URL Shortener API
+=============================================================================
