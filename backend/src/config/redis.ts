@@ -3,28 +3,35 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const redis = new Redis({
-  host: process.env.REDIS_HOST || 'localhost',
-  port: parseInt(process.env.REDIS_PORT || '6379'),
-  password: process.env.REDIS_PASSWORD || undefined,
-  maxRetriesPerRequest: 3,
-  retryStrategy: (times) => {
-    const maxDelay = 5000;
-    const delay = Math.min(times * 200, maxDelay);
-    return delay;
-  },
-});
+const REDIS_ENABLED = process.env.REDIS_HOST !== undefined && process.env.REDIS_HOST !== '';
 
-redis.on('connect', () => {
-  console.log('[Redis] Connected');
-});
+export const redis = REDIS_ENABLED
+  ? new Redis({
+      host: process.env.REDIS_HOST || 'localhost',
+      port: parseInt(process.env.REDIS_PORT || '6379'),
+      password: process.env.REDIS_PASSWORD || undefined,
+      maxRetriesPerRequest: 3,
+      retryStrategy: (times) => {
+        const maxDelay = 5000;
+        const delay = Math.min(times * 200, maxDelay);
+        return delay;
+      },
+    })
+  : null;
 
-redis.on('error', (err) => {
-  console.error('[Redis] Error:', err.message);
-});
+if (redis) {
+  redis.on('connect', () => {
+    console.log('[Redis] Connected');
+  });
 
-// Cache helpers
+  redis.on('error', (err) => {
+    console.error('[Redis] Error:', err.message);
+  });
+}
+
+// Cache helpers — null-safe wrapper so the app works without Redis
 export const cacheGet = async (key: string): Promise<string | null> => {
+  if (!redis) return null;
   try {
     return await redis.get(key);
   } catch (err) {
@@ -38,6 +45,7 @@ export const cacheSet = async (
   value: string,
   ttlSeconds: number = 3600
 ): Promise<void> => {
+  if (!redis) return;
   try {
     await redis.set(key, value, 'EX', ttlSeconds);
   } catch (err) {
@@ -46,6 +54,7 @@ export const cacheSet = async (
 };
 
 export const cacheDelete = async (key: string): Promise<void> => {
+  if (!redis) return;
   try {
     await redis.del(key);
   } catch (err) {
