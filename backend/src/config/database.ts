@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 import { Pool } from 'pg';
 
 dotenv.config();
@@ -22,6 +24,36 @@ export const testConnection = async () => {
     return true;
   } catch (err) {
     console.error('[DB] Connection failed:', err);
+    return false;
+  }
+};
+
+// Apply schema.sql (idempotent CREATE TABLE IF NOT EXISTS). Searches the
+// schema in dev (src/config), built output (dist/..) and repo root so it
+// works with ts-node-dev, `npm start` and cloud deploys alike.
+export const initSchema = async (): Promise<boolean> => {
+  const candidates = [
+    path.join(__dirname, 'schema.sql'),
+    path.join(__dirname, '..', 'config', 'schema.sql'),
+    path.join(process.cwd(), 'src', 'config', 'schema.sql'),
+  ];
+
+  const schemaPath = candidates.find((p) => fs.existsSync(p));
+  if (!schemaPath) {
+    console.error(
+      '[DB] Schema file not found. Looked at:',
+      candidates.join(', '),
+    );
+    return false;
+  }
+
+  try {
+    const sql = fs.readFileSync(schemaPath, 'utf8');
+    await pool.query(sql);
+    console.log('[DB] Schema applied (tables ready)');
+    return true;
+  } catch (err) {
+    console.error('[DB] Schema apply failed:', err);
     return false;
   }
 };
