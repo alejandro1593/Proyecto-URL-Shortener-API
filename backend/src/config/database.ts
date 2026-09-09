@@ -13,7 +13,10 @@ export const pool = new Pool({
   password: process.env.DB_PASSWORD || '',
   max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 10000,
+  ...(process.env.DB_SSL === 'true'
+    ? { ssl: { rejectUnauthorized: false } }
+    : {}),
 });
 
 // Test connection on startup
