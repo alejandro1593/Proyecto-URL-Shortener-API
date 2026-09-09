@@ -4,6 +4,18 @@ Proyecto de portafolio: un **acortador de URLs** completo con API REST, base de 
 
 ---
 
+## 🚀 Demo en vivo
+
+**https://proyecto-url-shortener-api.onrender.com**
+
+- **Web app** (registro, login, acortar y gestionar URLs): la raíz de la URL
+- **Documentación interactiva Swagger**: `/api-docs`
+- **Estado del servicio**: `/health`
+
+> Nota: en el plan gratuito de Render el primer acceso tras 15 min de inactividad puede tardar ~50 segundos (cold start).
+
+---
+
 ## ✨ Características
 
 | Área | Funcionalidad |
