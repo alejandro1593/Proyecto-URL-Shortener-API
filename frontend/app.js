@@ -67,10 +67,10 @@ function toast(message, color = 'success') {
 
 /**
  * Construye la URL acortada completa a partir del código corto.
- * Ejemplo: código "ab12cd" -> "/ab12cd" (mismo origen)
+ * Ejemplo: código "ab12cd" -> "https://dominio/ab12cd"
  */
 function shortUrlFor(code) {
-  return `${API_BASE}/${code}`;
+  return `${location.origin}/${code}`;
 }
 
 /* --------------------------------------------------------------------------
@@ -205,7 +205,8 @@ function renderUrls(urls) {
     return;
   }
 
-  // Construimos el HTML de todos los ítems y lo insertamos de una vez
+  // Construimos el HTML de todos los ítems y lo insertamos de una vez.
+  // Los botones usan data-id en lugar de onclick inline (CSP lo bloquea).
   urlsList.innerHTML = urls.map((u) => {
     const short = shortUrlFor(u.shortCode);
     return `
@@ -216,8 +217,8 @@ function renderUrls(urls) {
         </div>
         <span class="url-stats">${u.clickCount} clicks</span>
         <div class="url-actions">
-          <button class="btn btn-ghost btn-sm" onclick="copyToClipboard('${short}')">Copiar</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteUrl('${u.id}')">Borrar</button>
+          <button class="btn btn-ghost btn-sm js-copy" data-short="${short}">Copiar</button>
+          <button class="btn btn-danger btn-sm js-delete" data-id="${u.id}">Borrar</button>
         </div>
       </div>
     `;
@@ -244,6 +245,15 @@ async function deleteUrl(id) {
     toast(err.message, 'error');
   }
 }
+
+// Delegación de eventos: Copiar/Borrar sobre botones marcados con data-*
+urlsList.addEventListener('click', (e) => {
+  const copyBtn = e.target.closest('.js-copy');
+  if (copyBtn) return copyToClipboard(copyBtn.dataset.short);
+
+  const deleteBtn = e.target.closest('.js-delete');
+  if (deleteBtn) return deleteUrl(deleteBtn.dataset.id);
+});
 
 /* --------------------------------------------------------------------------
    5. VISUALIZACIÓN DE VISTAS
