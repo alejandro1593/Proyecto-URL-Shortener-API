@@ -7,8 +7,9 @@
 /* --------------------------------------------------------------------------
    1. CONFIGURACIÓN
    -------------------------------------------------------------------------- */
-// Base URL de la API del backend (corre en el puerto 3000)
-const API_BASE = 'http://localhost:3000';
+// Base URL de la API. Con el backend sirviendo también el frontend, ambos
+// comparten el mismo origen: rutas relativas funcionan en producción y local.
+const API_BASE = '';
 
 // Clave usada en localStorage para guardar el token de sesión
 const TOKEN_KEY = 'url_shortener_token';
@@ -66,7 +67,7 @@ function toast(message, color = 'success') {
 
 /**
  * Construye la URL acortada completa a partir del código corto.
- * Ejemplo: código "ab12cd" -> "http://localhost:3000/ab12cd"
+ * Ejemplo: código "ab12cd" -> "/ab12cd" (mismo origen)
  */
 function shortUrlFor(code) {
   return `${API_BASE}/${code}`;

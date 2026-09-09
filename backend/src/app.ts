@@ -1,4 +1,6 @@
 import express from 'express';
+import path from 'path';
+import fs from 'fs';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -86,6 +88,22 @@ app.use('/api/auth', authRoutes);
 app.use('/api/urls', urlRoutes);
 app.use('/api/stats', statsRoutes);
 
+// Resolve frontend static folder relative to this file (src -> ../frontend,
+// dist -> ../../frontend) so it works in dev and production.
+const FRONTEND_CANDIDATES = [
+  path.join(__dirname, '..', 'frontend'),
+  path.join(__dirname, '..', '..', 'frontend'),
+  path.join(process.cwd(), 'frontend'),
+  path.join(process.cwd(), '..', 'frontend'),
+];
+const FRONTEND_DIR = FRONTEND_CANDIDATES.find((p) => {
+  try {
+    return fs.existsSync(path.join(p, 'index.html'));
+  } catch {
+    return false;
+  }
+}) || process.cwd();
+
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -94,6 +112,9 @@ app.get('/health', (req, res) => {
     uptime: process.uptime(),
   });
 });
+
+// Serve the static frontend (SPA) before the redirect catch-all
+app.use(express.static(FRONTEND_DIR));
 
 // Redirect handler (short URL -> original URL)
 app.get('/:shortCode', redirectLimiter, asyncHandler(redirectUrl));
